@@ -36,9 +36,14 @@ namespace ParaBank.Tests
             var customerData = await RestClient.GetAsync<CustomerModel>(getRequest);
 
             customerData.Should().NotBeNull();
-            customerData!.FirstName.Should().Be("UpdatedJohn");
+            customerData.FirstName.Should().Be("UpdatedJohn");
             customerData.LastName.Should().Be("UpdatedDoe");
             customerData.Address.Street.Should().Be("999 Automation Way");
+            customerData.Address.City.Should().Be("TechCity");
+            customerData.Address.State.Should().Be("CA");
+            customerData.Address.ZipCode.Should().Be("90210");
+            customerData.PhoneNumber.Should().Be("1234567890");
+            customerData.Ssn.Should().Be("999-99-9999");
         }
 
         [Test, Description("API-2: User has an account after creation")]
