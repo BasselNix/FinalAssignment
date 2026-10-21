@@ -23,7 +23,8 @@ namespace ParaBank.Tests
 
             Logger.Info("Initializing Chrome Browser Driver...");
             var options = new ChromeOptions();
-            options.AddArgument("--headless=new"); // Remove if you prefer a visible browser window
+            // Remove if you prefer a visible browser window
+            options.AddArgument("--headless=new");
 
             Driver = new ChromeDriver(options);
             Driver.Manage().Window.Maximize();
