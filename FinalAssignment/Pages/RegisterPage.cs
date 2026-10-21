@@ -24,10 +24,10 @@ namespace ParaBank.Pages
         {
             Type(_firstName, user.FirstName);
             Type(_lastName, user.LastName);
-            Type(_street, user.Street);
-            Type(_city, user.City);
-            Type(_state, user.State);
-            Type(_zipCode, user.ZipCode);
+            Type(_street, user.Address.Street);
+            Type(_city, user.Address.City);
+            Type(_state, user.Address.State);
+            Type(_zipCode, user.Address.ZipCode);
             Type(_phone, user.PhoneNumber);
             Type(_ssn, user.Ssn);
             Type(_username, user.Username);

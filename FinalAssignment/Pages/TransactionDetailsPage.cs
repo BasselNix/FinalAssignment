@@ -5,7 +5,8 @@ namespace ParaBank.Pages
     public class TransactionDetailsPage : BasePage
     {
         private readonly By _firstTransactionLink = By.CssSelector("#transactionTable tbody tr td a");
-        private readonly By _transactionId = By.XPath("//td[contains(.,'Transaction ID:')]/following-sibling::td");
+        private readonly By _transactionId =
+            By.XPath("//tr[td[contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'transaction id')]]/td[2]");
 
         public TransactionDetailsPage(IWebDriver driver) : base(driver) { }
 

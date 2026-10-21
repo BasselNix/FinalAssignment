@@ -8,6 +8,15 @@ namespace ParaBank.Pages
 
         public AccountsOverviewPage(IWebDriver driver) : base(driver) { }
 
+        public List<string> GetAccountNumbers()
+        {
+            Wait.Until(d => d.FindElements(_accountLinks).Count > 0);
+            return Driver.FindElements(_accountLinks)
+                         .Select(e => e.Text.Trim())
+                         .Where(text => !string.IsNullOrEmpty(text))
+                         .ToList();
+        }
+
         public TransactionDetailsPage OpenFirstAccountTransactions()
         {
             Wait.Until(d => d.FindElements(_accountLinks).Count > 0);
@@ -18,7 +27,7 @@ namespace ParaBank.Pages
 
         public decimal GetAccountBalance(string accountId)
         {
-            var cellLocator = By.XPath($"//a[text()='{accountId}']/parent::td/following-sibling::td[1]");
+            var cellLocator = By.XPath($"//tr[td/a[text()='{accountId}']]/td[2]");
             var cellText = GetText(cellLocator);
             return decimal.Parse(cellText.Replace("$", "").Trim());
         }
