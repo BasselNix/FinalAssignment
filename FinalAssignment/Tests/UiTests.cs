@@ -7,14 +7,22 @@ namespace ParaBank.Tests
     [TestFixture]
     public class UiTests : BaseTest
     {
+        private HomePage _homePage;
+
+        [SetUp]
+        public override async Task Setup()
+        {
+            await base.Setup();
+
+            Driver.Navigate().GoToUrl($"{BaseUrl}/index.htm");
+            _homePage = new HomePage(Driver);
+        }
+
         [Test, Description("UI-1: User can be created")]
         public void UI1_UserCanBeCreated()
         {
-            Driver.Navigate().GoToUrl($"{BaseUrl}/index.htm");
-            var homePage = new HomePage(Driver);
-
             var user = new CustomerModel();
-            var registerPage = homePage.ClickRegister();
+            var registerPage = _homePage.ClickRegister();
             var welcomePage = registerPage.FillAndSubmitRegistration(user);
 
             welcomePage.GetHeaderWelcomeText().Should().Be($"Welcome {user.Username}");
@@ -24,9 +32,8 @@ namespace ParaBank.Tests
         [Test, Description("UI-2: User can transfer money between accounts")]
         public void UI2_UserCanTransferMoneyBetweenAccounts()
         {
-            Driver.Navigate().GoToUrl($"{BaseUrl}/index.htm");
             // .GetLeftNavWelcomeText() ensures we wait until the user has been logged in
-            new HomePage(Driver).Login("john", "demo").GetLeftNavWelcomeText();
+            _homePage.Login("john", "demo").GetLeftNavWelcomeText();
 
             Driver.Navigate().GoToUrl($"{BaseUrl}/overview.htm");
             var overviewPage = new AccountsOverviewPage(Driver);
@@ -61,9 +68,8 @@ namespace ParaBank.Tests
         [Test, Description("UI-3: User can see details for each transaction in account")]
         public void UI3_UserCanSeeDetailsForEachTransaction()
         {
-            Driver.Navigate().GoToUrl($"{BaseUrl}/index.htm");
             // .GetLeftNavWelcomeText() ensures we wait until the user has been logged in
-            new HomePage(Driver).Login("john", "demo").GetLeftNavWelcomeText();
+            _homePage.Login("john", "demo").GetLeftNavWelcomeText();
 
             // Ensure transactions exist
             Driver.Navigate().GoToUrl($"{BaseUrl}/transfer.htm");
