@@ -10,8 +10,16 @@ namespace ParaBank.Pages
         private static readonly By _toAccountDropdown = By.Id("toAccountId");
         private static readonly By _transferBtn = By.XPath("//input[@value='Transfer']");
         private static readonly By _titleHeader = By.CssSelector("h1.title");
+        private static readonly By _transferSuccessHeader = By.XPath("//h1[text()='Transfer Complete!']");
 
         public string GetPageTitle() => GetText(_titleHeader);
+
+        public List<string> GetFromAccountDropdownOptions()
+        {
+            Wait.Until(d => new SelectElement(d.FindElement(_fromAccountDropdown)).Options.Count > 0);
+            var selectElement = new SelectElement(Find(_fromAccountDropdown));
+            return selectElement.Options.Select(o => o.Text.Trim()).ToList();
+        }
 
         public void TransferFunds(string amount, int fromIndex = 0, int toIndex = 1)
         {
@@ -27,5 +35,7 @@ namespace ParaBank.Pages
 
             Click(_transferBtn);
         }
+
+        public string GetTransferSuccessTitle() => GetText(_transferSuccessHeader);
     }
 }

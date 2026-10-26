@@ -23,6 +23,7 @@ namespace ParaBank.Tests
             var registerPage = _homePage.ClickRegister();
             var welcomePage = registerPage.FillAndSubmitRegistration(user);
 
+            welcomePage.GetRegistrationSuccessMessage().Should().Be("Your account was created successfully. You are now logged in.");
             welcomePage.GetHeaderWelcomeText().Should().Be($"Welcome {user.Username}");
             welcomePage.GetLeftNavWelcomeText().Should().Be($"Welcome {user.FirstName} {user.LastName}");
         }
@@ -51,8 +52,13 @@ namespace ParaBank.Tests
             var transferPage = new TransferPage(Driver);
             transferPage.GetPageTitle().Should().Be("Transfer Funds");
 
+            var dropdownAccounts = transferPage.GetFromAccountDropdownOptions();
+            dropdownAccounts.Should().BeEquivalentTo(accountNumbers, "Account numbers in the dropdown should belong to the logged-in user.");
+
             // Perform transfer between accounts
             transferPage.TransferFunds(transferAmount.ToString("0.00"), fromIndex: 0, toIndex: 1);
+
+            transferPage.GetTransferSuccessTitle().Should().Be("Transfer Complete!", "Transfer should complete successfully and display completion confirmation.");
 
             // Verify updated balances on Accounts Overview page
             Driver.Navigate().GoToUrl($"{BaseUrl}/overview.htm");
@@ -69,10 +75,6 @@ namespace ParaBank.Tests
             // .GetLeftNavWelcomeText() ensures we wait until the user has been logged in
             _homePage.Login("john", "demo").GetLeftNavWelcomeText();
 
-            // Ensure transactions exist
-            Driver.Navigate().GoToUrl($"{BaseUrl}/transfer.htm");
-            new TransferPage(Driver).TransferFunds("50.00");
-
             Driver.Navigate().GoToUrl($"{BaseUrl}/overview.htm");
             var overviewPage = new AccountsOverviewPage(Driver);
             var transactionDetailsPage = overviewPage.OpenFirstAccountTransactions();
@@ -80,7 +82,11 @@ namespace ParaBank.Tests
             transactionDetailsPage.ClickFirstTransaction();
 
             // Verify transaction details are complete and displayed correctly
-            transactionDetailsPage.GetTransactionIdText().Should().NotBeNullOrEmpty();
+            transactionDetailsPage.GetTransactionInfoId().Should().Be("12145", "Transaction ID must be correctly displayed.");
+            transactionDetailsPage.GetTransactionInfoDate().Should().Be("12-11-2025", "Transaction date must be correctly displayed.");
+            transactionDetailsPage.GetTransactionInfoDescription().Should().Be("Check # 1111", "Transaction description must be correctly displayed.");
+            transactionDetailsPage.GetTransactionInfoType().Should().Be("Credit", "Transaction type must be correctly displayed.");
+            transactionDetailsPage.GetTransactionInfoAmount().Should().Be("$300.00", "Transaction amount must be correctly displayed.");
         }
     }
 }

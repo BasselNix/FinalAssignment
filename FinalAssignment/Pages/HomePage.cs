@@ -10,6 +10,7 @@ namespace ParaBank.Pages
         private static readonly By _loginButton = By.CssSelector("input[value='Log In']");
         private static readonly By _leftNavWelcome = By.ClassName("smallText");
         private static readonly By _pageTitle = By.CssSelector("h1.title");
+        private static readonly By _rightPanelParagraph = By.CssSelector("#rightPanel p");
 
         public RegisterPage ClickRegister()
         {
@@ -24,6 +25,8 @@ namespace ParaBank.Pages
             Click(_loginButton);
             return this;
         }
+
+        public string GetRegistrationSuccessMessage() => GetText(_rightPanelParagraph);
 
         public string GetLeftNavWelcomeText()
         {

@@ -70,8 +70,15 @@ namespace ParaBank.Pages
         protected string GetText(By locator) =>
             Wait.Until(d =>
             {
-                var text = d.FindElement(locator).Text;
-                return !string.IsNullOrEmpty(text) ? text : null;
+                try
+                {
+                    var text = d.FindElement(locator).Text;
+                    return !string.IsNullOrWhiteSpace(text) ? text.Trim() : null;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return null;
+                }
             })!;
     }
 }
