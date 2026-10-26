@@ -2,11 +2,10 @@
 
 namespace ParaBank.Pages
 {
-    public class AccountsOverviewPage : BasePage
+    public class AccountsOverviewPage(IWebDriver driver) : BasePage(driver)
     {
-        private readonly By _accountLinks = By.CssSelector("#accountTable tbody tr td a");
-
-        public AccountsOverviewPage(IWebDriver driver) : base(driver) { }
+        private static readonly By _accountLinks = By.CssSelector("#accountTable tbody tr td a");
+        private static By GetAccountBalanceCellLocator(string accountId) => By.XPath($"//tr[td/a[text()='{accountId}']]/td[2]");
 
         public List<string> GetAccountNumbers()
         {
@@ -27,7 +26,7 @@ namespace ParaBank.Pages
 
         public decimal GetAccountBalance(string accountId)
         {
-            var cellLocator = By.XPath($"//tr[td/a[text()='{accountId}']]/td[2]");
+            var cellLocator = GetAccountBalanceCellLocator(accountId);
             var cellText = GetText(cellLocator);
             return decimal.Parse(cellText.Replace("$", "").Trim());
         }

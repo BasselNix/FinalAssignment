@@ -15,14 +15,12 @@ namespace ParaBank.Pages
             Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
         }
 
-        protected IWebElement Find(By locator)
-        {
-            return Wait.Until(d =>
+        protected IWebElement Find(By locator) =>
+            Wait.Until(d =>
             {
                 var element = d.FindElement(locator);
                 return element.Displayed ? element : null;
             })!;
-        }
 
         protected void Click(By locator)
         {
@@ -69,13 +67,11 @@ namespace ParaBank.Pages
             });
         }
 
-        protected string GetText(By locator)
-        {
-            return Wait.Until(d =>
+        protected string GetText(By locator) =>
+            Wait.Until(d =>
             {
                 var text = d.FindElement(locator).Text;
                 return !string.IsNullOrEmpty(text) ? text : null;
             })!;
-        }
     }
 }

@@ -2,16 +2,14 @@
 
 namespace ParaBank.Pages
 {
-    public class HomePage : BasePage
+    public class HomePage(IWebDriver driver) : BasePage(driver)
     {
-        private readonly By _registerLink = By.XPath("//a[text()='Register']");
-        private readonly By _usernameInput = By.Name("username");
-        private readonly By _passwordInput = By.Name("password");
-        private readonly By _loginButton = By.CssSelector("input[value='Log In']");
-        private readonly By _leftNavWelcome = By.ClassName("smallText");
-        private readonly By _pageTitle = By.CssSelector("h1.title");
-
-        public HomePage(IWebDriver driver) : base(driver) { }
+        private static readonly By _registerLink = By.XPath("//a[text()='Register']");
+        private static readonly By _usernameInput = By.Name("username");
+        private static readonly By _passwordInput = By.Name("password");
+        private static readonly By _loginButton = By.CssSelector("input[value='Log In']");
+        private static readonly By _leftNavWelcome = By.ClassName("smallText");
+        private static readonly By _pageTitle = By.CssSelector("h1.title");
 
         public RegisterPage ClickRegister()
         {

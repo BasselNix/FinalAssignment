@@ -3,15 +3,13 @@ using OpenQA.Selenium.Support.UI;
 
 namespace ParaBank.Pages
 {
-    public class TransferPage : BasePage
+    public class TransferPage(IWebDriver driver) : BasePage(driver)
     {
-        private readonly By _amountInput = By.Id("amount");
-        private readonly By _fromAccountDropdown = By.Id("fromAccountId");
-        private readonly By _toAccountDropdown = By.Id("toAccountId");
-        private readonly By _transferBtn = By.XPath("//input[@value='Transfer']");
-        private readonly By _titleHeader = By.CssSelector("h1.title");
-
-        public TransferPage(IWebDriver driver) : base(driver) { }
+        private static readonly By _amountInput = By.Id("amount");
+        private static readonly By _fromAccountDropdown = By.Id("fromAccountId");
+        private static readonly By _toAccountDropdown = By.Id("toAccountId");
+        private static readonly By _transferBtn = By.XPath("//input[@value='Transfer']");
+        private static readonly By _titleHeader = By.CssSelector("h1.title");
 
         public string GetPageTitle() => GetText(_titleHeader);
 

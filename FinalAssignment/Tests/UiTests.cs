@@ -10,10 +10,8 @@ namespace ParaBank.Tests
         private HomePage _homePage;
 
         [SetUp]
-        public override async Task Setup()
+        public async Task UiTestsSetup()
         {
-            await base.Setup();
-
             Driver.Navigate().GoToUrl($"{BaseUrl}/index.htm");
             _homePage = new HomePage(Driver);
         }

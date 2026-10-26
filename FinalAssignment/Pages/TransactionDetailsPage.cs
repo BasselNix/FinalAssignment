@@ -2,13 +2,11 @@
 
 namespace ParaBank.Pages
 {
-    public class TransactionDetailsPage : BasePage
+    public class TransactionDetailsPage(IWebDriver driver) : BasePage(driver)
     {
-        private readonly By _firstTransactionLink = By.CssSelector("#transactionTable tbody tr td a");
-        private readonly By _transactionId =
+        private static readonly By _firstTransactionLink = By.CssSelector("#transactionTable tbody tr td a");
+        private static readonly By _transactionId =
             By.XPath("//tr[td[contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'transaction id')]]/td[2]");
-
-        public TransactionDetailsPage(IWebDriver driver) : base(driver) { }
 
         public void ClickFirstTransaction()
         {

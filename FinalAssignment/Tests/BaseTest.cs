@@ -14,7 +14,7 @@ namespace ParaBank.Tests
         protected const string ApiBaseUrl = "http://localhost:8080/parabank/services/bank";
 
         [SetUp]
-        public virtual async Task Setup()
+        public async Task Setup()
         {
             Logger.Info("Initializing RestSharp API Client...");
             RestClient = new RestClient(ApiBaseUrl);
@@ -49,7 +49,7 @@ namespace ParaBank.Tests
             if (Driver != null)
             {
                 Logger.Info("Quitting Chrome Driver...");
-                Driver.Quit();
+                Driver.Dispose();
             }
 
             if (RestClient != null)
