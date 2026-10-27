@@ -85,7 +85,7 @@ namespace ParaBank.Tests
             Driver.Navigate().GoToUrl($"{BaseUrl}/overview.htm");
             var overviewPage = new AccountsOverviewPage(Driver);
             AccountDetailsPage accountDetailsPage = overviewPage.OpenFirstAccountDetails();
-            TransactionDetailsPage transactionDetailsPage = accountDetailsPage.ClickFirstTransaction();
+            TransactionDetailsPage transactionDetailsPage = accountDetailsPage.OpenFirstTransactionDetails();
 
             var transactionExpectedDetails = new TransactionModel
             {

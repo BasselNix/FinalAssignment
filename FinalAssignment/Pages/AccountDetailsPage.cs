@@ -7,7 +7,7 @@ namespace ParaBank.Pages
     {
         private static readonly By _transactionLinks = By.CssSelector("#transactionTable tbody tr td a");
 
-        public TransactionDetailsPage ClickFirstTransaction()
+        public TransactionDetailsPage OpenFirstTransactionDetails()
         {
             Wait.Until(d => d.FindElements(_transactionLinks).Count > 0);
             var links = Driver.FindElements(_transactionLinks);
