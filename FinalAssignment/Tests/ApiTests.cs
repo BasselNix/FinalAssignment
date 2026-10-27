@@ -84,15 +84,12 @@ namespace ParaBank.Tests
             var request = new RestRequest($"customers/{newCustomerId}/accounts", Method.Get);
             var accounts = await RestClient.GetAsync<List<AccountModel>>(request);
 
-            // Exactly one bank account exists for the new user
             using (new AssertionScope())
             {
                 accounts.Should().NotBeNull();
                 accounts.Should().HaveCount(1, "A newly registered user should have exactly one bank account opened by default.");
+                accounts[0].Balance.Should().Be(515.50m, "Default opening balance should match Admin Page configuration.");
             }
-
-            // Default amount ($515.50 per Admin Settings) is added to the account
-            accounts[0].Balance.Should().Be(515.50m, "Default opening balance should match Admin Page configuration.");
         }
 
         [Test, Description("API-3: Send funds via API")]
