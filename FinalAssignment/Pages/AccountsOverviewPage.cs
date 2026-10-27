@@ -6,7 +6,6 @@ namespace ParaBank.Pages
     public class AccountsOverviewPage(IWebDriver driver) : BasePage(driver)
     {
         private static readonly By _accountLinks = By.CssSelector("#accountTable tbody tr td a");
-        private static readonly By _firstTransactionLink = By.CssSelector("#transactionTable tbody tr td a");
         private static By GetAccountBalanceCellLocator(string accountId) => By.XPath($"//tr[td/a[text()='{accountId}']]/td[2]");
 
         public List<string> GetAccountNumbers()
@@ -18,15 +17,13 @@ namespace ParaBank.Pages
                          .ToList();
         }
 
-        public TransactionDetailsPage OpenFirstAccountTransactions()
+        public AccountDetailsPage OpenFirstAccountDetails()
         {
             Wait.Until(d => d.FindElements(_accountLinks).Count > 0);
             var links = Driver.FindElements(_accountLinks);
             links[0].Click();
-            return new TransactionDetailsPage(Driver);
+            return new AccountDetailsPage(Driver);
         }
-
-        public void ClickFirstTransactionLink() => Click(_firstTransactionLink);
 
         public decimal GetAccountBalance(string accountId)
         {
