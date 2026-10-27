@@ -85,18 +85,19 @@ namespace ParaBank.Tests
             Driver.Navigate().GoToUrl($"{BaseUrl}/overview.htm");
             var overviewPage = new AccountsOverviewPage(Driver);
             var transactionDetailsPage = overviewPage.OpenFirstAccountTransactions();
+            overviewPage.ClickFirstTransactionLink();
 
-            transactionDetailsPage.ClickFirstTransaction();
-
-            // Verify transaction details are complete and displayed correctly
-            using (new AssertionScope())
+            var transactionExpectedDetails = new TransactionModel
             {
-                transactionDetailsPage.GetTransactionInfoId().Should().Be("12145", "Transaction ID must be correctly displayed.");
-                transactionDetailsPage.GetTransactionInfoDate().Should().Be("12-11-2025", "Transaction date must be correctly displayed.");
-                transactionDetailsPage.GetTransactionInfoDescription().Should().Be("Check # 1111", "Transaction description must be correctly displayed.");
-                transactionDetailsPage.GetTransactionInfoType().Should().Be("Credit", "Transaction type must be correctly displayed.");
-                transactionDetailsPage.GetTransactionInfoAmount().Should().Be("$300.00", "Transaction amount must be correctly displayed.");
-            }
+                Id = "12145",
+                Date = "12-11-2025",
+                Description = "Check # 1111",
+                Type = "Credit",
+                Amount = "$300.00"
+            };
+            var transactionActualDetails = transactionDetailsPage.GetTransactionDetails();
+
+            transactionActualDetails.Should().BeEquivalentTo(transactionExpectedDetails);
         }
     }
 }
