@@ -29,16 +29,9 @@ namespace ParaBank.Pages
             {
                 Wait.Until(d =>
                 {
-                    try
-                    {
-                        var element = d.FindElement(locator);
-                        return element.Displayed && element.Enabled ? element : null;
-                    }
-                    catch (NoSuchElementException)
-                    {
-                        return null;
-                    }
-                })?.Click();
+                    var element = d.FindElement(locator);
+                    return element.Displayed && element.Enabled ? element : null;
+                }).Click();
             }
             catch (WebDriverTimeoutException ex)
             {
