@@ -25,23 +25,25 @@ namespace ParaBank.Pages
         protected void Click(By locator)
         {
             Logger.Info($"Clicking on element: {locator}");
-            Wait.Until(d =>
+            try
             {
-                try
+                Wait.Until(d =>
                 {
-                    var element = d.FindElement(locator);
-                    if (element.Displayed && element.Enabled)
+                    try
                     {
-                        element.Click();
-                        return true;
+                        var element = d.FindElement(locator);
+                        return element.Displayed && element.Enabled ? element : null;
                     }
-                    return false;
-                }
-                catch (StaleElementReferenceException)
-                {
-                    return false;
-                }
-            });
+                    catch (NoSuchElementException)
+                    {
+                        return null;
+                    }
+                })?.Click();
+            }
+            catch (WebDriverTimeoutException ex)
+            {
+                throw new WebDriverTimeoutException($"Element located by '{locator}' is not visible, enabled, or clickable.", ex);
+            }
         }
 
         protected void Type(By locator, string text)

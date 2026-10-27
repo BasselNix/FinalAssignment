@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using FluentAssertions.Execution;
 using ParaBank.Models;
 using ParaBank.Pages;
 
@@ -23,9 +24,12 @@ namespace ParaBank.Tests
             var registerPage = _homePage.ClickRegister();
             var welcomePage = registerPage.FillAndSubmitRegistration(user);
 
-            welcomePage.GetRegistrationSuccessMessage().Should().Be("Your account was created successfully. You are now logged in.");
-            welcomePage.GetHeaderWelcomeText().Should().Be($"Welcome {user.Username}");
-            welcomePage.GetLeftNavWelcomeText().Should().Be($"Welcome {user.FirstName} {user.LastName}");
+            using (new AssertionScope())
+            {
+                welcomePage.GetRegistrationSuccessMessage().Should().Be("Your account was created successfully. You are now logged in.");
+                welcomePage.GetHeaderWelcomeText().Should().Be($"Welcome {user.Username}");
+                welcomePage.GetLeftNavWelcomeText().Should().Be($"Welcome {user.FirstName} {user.LastName}");
+            }
         }
 
         [Test, Description("UI-2: User can transfer money between accounts")]
@@ -65,8 +69,11 @@ namespace ParaBank.Tests
             decimal finalFromBalance = overviewPage.GetAccountBalance(fromAccount);
             decimal finalToBalance = overviewPage.GetAccountBalance(toAccount);
 
-            finalFromBalance.Should().Be(initialFromBalance - transferAmount);
-            finalToBalance.Should().Be(initialToBalance + transferAmount);
+            using (new AssertionScope())
+            {
+                finalFromBalance.Should().Be(initialFromBalance - transferAmount);
+                finalToBalance.Should().Be(initialToBalance + transferAmount);
+            }
         }
 
         [Test, Description("UI-3: User can see details for each transaction in account")]
@@ -82,11 +89,14 @@ namespace ParaBank.Tests
             transactionDetailsPage.ClickFirstTransaction();
 
             // Verify transaction details are complete and displayed correctly
-            transactionDetailsPage.GetTransactionInfoId().Should().Be("12145", "Transaction ID must be correctly displayed.");
-            transactionDetailsPage.GetTransactionInfoDate().Should().Be("12-11-2025", "Transaction date must be correctly displayed.");
-            transactionDetailsPage.GetTransactionInfoDescription().Should().Be("Check # 1111", "Transaction description must be correctly displayed.");
-            transactionDetailsPage.GetTransactionInfoType().Should().Be("Credit", "Transaction type must be correctly displayed.");
-            transactionDetailsPage.GetTransactionInfoAmount().Should().Be("$300.00", "Transaction amount must be correctly displayed.");
+            using (new AssertionScope())
+            {
+                transactionDetailsPage.GetTransactionInfoId().Should().Be("12145", "Transaction ID must be correctly displayed.");
+                transactionDetailsPage.GetTransactionInfoDate().Should().Be("12-11-2025", "Transaction date must be correctly displayed.");
+                transactionDetailsPage.GetTransactionInfoDescription().Should().Be("Check # 1111", "Transaction description must be correctly displayed.");
+                transactionDetailsPage.GetTransactionInfoType().Should().Be("Credit", "Transaction type must be correctly displayed.");
+                transactionDetailsPage.GetTransactionInfoAmount().Should().Be("$300.00", "Transaction amount must be correctly displayed.");
+            }
         }
     }
 }

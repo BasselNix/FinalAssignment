@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using System.Globalization;
 
 namespace ParaBank.Pages
 {
@@ -28,7 +29,7 @@ namespace ParaBank.Pages
         {
             var cellLocator = GetAccountBalanceCellLocator(accountId);
             var cellText = GetText(cellLocator);
-            return decimal.Parse(cellText.Replace("$", "").Trim());
+            return decimal.Parse(cellText.Replace("$", "").Trim(), CultureInfo.InvariantCulture);
         }
     }
 }

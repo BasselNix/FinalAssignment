@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using FluentAssertions.Execution;
 using ParaBank.Models;
 using ParaBank.Pages;
 using ParaBank.Utilities;
@@ -35,15 +36,29 @@ namespace ParaBank.Tests
             var getRequest = new RestRequest($"customers/{targetUserId}", Method.Get);
             var customerData = await RestClient.GetAsync<CustomerModel>(getRequest);
 
-            customerData.Should().NotBeNull();
-            customerData.FirstName.Should().Be("UpdatedJohn");
-            customerData.LastName.Should().Be("UpdatedDoe");
-            customerData.Address.Street.Should().Be("999 Automation Way");
-            customerData.Address.City.Should().Be("TechCity");
-            customerData.Address.State.Should().Be("CA");
-            customerData.Address.ZipCode.Should().Be("90210");
-            customerData.PhoneNumber.Should().Be("1234567890");
-            customerData.Ssn.Should().Be("999-99-9999");
+            var correctData = new CustomerModel
+            {
+                FirstName = "UpdatedJohn",
+                LastName = "UpdatedDoe",
+                Address = new AddressModel
+                {
+                    Street = "999 Automation Way",
+                    City = "TechCity",
+                    State = "CA",
+                    ZipCode = "90210"
+                },
+                PhoneNumber = "1234567890",
+                Ssn = "999-99-9999"
+            };
+
+            using (new AssertionScope())
+            {
+                customerData.Should().NotBeNull();
+                customerData.Should().BeEquivalentTo(correctData, 
+                    options => options
+                    .Excluding(ctx => ctx.Id)
+                    .Excluding(ctx => ctx.Username));
+            }
         }
 
         [Test, Description("API-2: User has an account after creation")]
@@ -70,11 +85,14 @@ namespace ParaBank.Tests
             var accounts = await RestClient.GetAsync<List<AccountModel>>(request);
 
             // Exactly one bank account exists for the new user
-            accounts.Should().NotBeNull();
-            accounts.Should().HaveCount(1, "A newly registered user should have exactly one bank account opened by default.");
+            using (new AssertionScope())
+            {
+                accounts.Should().NotBeNull();
+                accounts.Should().HaveCount(1, "A newly registered user should have exactly one bank account opened by default.");
+            }
 
             // Default amount ($515.50 per Admin Settings) is added to the account
-            accounts![0].Balance.Should().Be(515.50m, "Default opening balance should match Admin Page configuration.");
+            accounts[0].Balance.Should().Be(515.50m, "Default opening balance should match Admin Page configuration.");
         }
 
         [Test, Description("API-3: Send funds via API")]
@@ -102,8 +120,11 @@ namespace ParaBank.Tests
             var updatedFrom = await RestClient.GetAsync<AccountModel>(new RestRequest($"accounts/{fromAccountId}", Method.Get));
             var updatedTo = await RestClient.GetAsync<AccountModel>(new RestRequest($"accounts/{toAccountId}", Method.Get));
 
-            updatedFrom!.Balance.Should().Be(initialFrom!.Balance - amount);
-            updatedTo!.Balance.Should().Be(initialTo!.Balance + amount);
+            using (new AssertionScope())
+            {
+                updatedFrom!.Balance.Should().Be(initialFrom!.Balance - amount);
+                updatedTo!.Balance.Should().Be(initialTo!.Balance + amount);
+            }
         }
     }
 }
