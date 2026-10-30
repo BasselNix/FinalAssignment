@@ -2,78 +2,76 @@
 using OpenQA.Selenium.Support.UI;
 using ParaBank.Utilities;
 
-namespace ParaBank.Pages
+namespace ParaBank.Pages;
+
+public abstract class BasePage
 {
-    public abstract class BasePage
+    protected IWebDriver Driver;
+    protected WebDriverWait Wait;
+
+    protected BasePage(IWebDriver driver)
     {
-        protected IWebDriver Driver;
-        protected WebDriverWait Wait;
+        Driver = driver;
+        Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+    }
 
-        protected BasePage(IWebDriver driver)
+    protected IWebElement Find(By locator) =>
+        Wait.Until(d =>
         {
-            Driver = driver;
-            Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-        }
+            var element = d.FindElement(locator);
+            return element.Displayed ? element : null;
+        })!;
 
-        protected IWebElement Find(By locator) =>
+    protected void Click(By locator)
+    {
+        Logger.Info($"Clicking on element: {locator}");
+        try
+        {
             Wait.Until(d =>
             {
                 var element = d.FindElement(locator);
-                return element.Displayed ? element : null;
-            })!;
-
-        protected void Click(By locator)
-        {
-            Logger.Info($"Clicking on element: {locator}");
-            try
-            {
-                Wait.Until(d =>
-                {
-                    var element = d.FindElement(locator);
-                    return element.Displayed && element.Enabled ? element : null;
-                }).Click();
-            }
-            catch (WebDriverTimeoutException ex)
-            {
-                throw new WebDriverTimeoutException($"Element located by '{locator}' is not visible, enabled, or clickable.", ex);
-            }
+                return element.Displayed && element.Enabled ? element : null;
+            }).Click();
         }
-
-        protected void Type(By locator, string text)
+        catch (WebDriverTimeoutException ex)
         {
-            Logger.Info($"Typing '{text}' into field: {locator}");
-            Wait.Until(d =>
+            throw new WebDriverTimeoutException($"Element located by '{locator}' is not visible, enabled, or clickable.", ex);
+        }
+    }
+
+    protected void Type(By locator, string text)
+    {
+        Logger.Info($"Typing '{text}' into field: {locator}");
+        try
+        {
+            var element = Wait.Until(d =>
             {
-                try
-                {
-                    var element = d.FindElement(locator);
-                    if (element.Displayed && element.Enabled)
-                    {
-                        element.Clear();
-                        element.SendKeys(text);
-                        return true;
-                    }
-                    return false;
-                }
-                catch (StaleElementReferenceException)
-                {
-                    return false;
-                }
+                var element = d.FindElement(locator);
+                return element.Displayed && element.Enabled ? element : null;
             });
-        }
 
-        protected string GetText(By locator) =>
-            Wait.Until(d =>
+            element!.Clear();
+            element.SendKeys(text);
+        }
+        catch (WebDriverTimeoutException ex)
+        {
+            throw new WebDriverTimeoutException($"Element located by '{locator}' is not visible, enabled, or clickable.", ex);
+        }
+    }
+
+    protected string GetText(By locator)
+    {
+        try
+        {
+            return Wait.Until(d =>
             {
-                try
-                {
-                    var text = d.FindElement(locator).Text;
-                    return !string.IsNullOrWhiteSpace(text) ? text.Trim() : null;
-                }
-                catch (StaleElementReferenceException)
-                {
-                    return null;
-                }
-            })!;
+                var element = d.FindElement(locator);
+                return element.Displayed && element.Enabled ? element : null;
+            }).Text;
+        }
+        catch (WebDriverTimeoutException ex)
+        {
+            throw new WebDriverTimeoutException($"Element located by '{locator}' is not visible, enabled, or clickable.", ex);
+        }
     }
 }

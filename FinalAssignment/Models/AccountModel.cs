@@ -1,10 +1,16 @@
-﻿namespace ParaBank.Models
+﻿namespace ParaBank.Models;
+
+public enum AccountType
 {
-    public class AccountModel
-    {
-        public int Id { get; set; }
-        public int CustomerId { get; set; }
-        public string Type { get; set; } = "CHECKING";
-        public decimal Balance { get; set; }
-    }
+    CHECKING,
+    SAVINGS,
+    LOAN
+}
+
+public class AccountModel
+{
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+    public AccountType Type { get; set; } = AccountType.CHECKING;
+    public decimal Balance { get; set; }
 }

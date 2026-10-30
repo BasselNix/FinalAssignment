@@ -1,11 +1,16 @@
-﻿namespace ParaBank.Models
+﻿namespace ParaBank.Models;
+
+public enum TransactionType
 {
-    public class TransactionModel
-    {
-        public string Id { get; set; } = string.Empty;
-        public string Date { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty;
-        public string Amount { get; set; } = string.Empty;
-    }
+    Credit,
+    Debit
+}
+
+public class TransactionModel
+{
+    public required string Id { get; set; }
+    public required string Date { get; set; }
+    public required string Description { get; set; }
+    public required TransactionType Type { get; set; }
+    public required string Amount { get; set; }
 }
